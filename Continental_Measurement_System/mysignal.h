@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QCheckBox>
 
-#include "MDFChannel.h"
+#include "Continental_Measurement_System/MDF/MDFChannel.h"
 #include "signalchart.h"
 
 class mySignal : public QObject

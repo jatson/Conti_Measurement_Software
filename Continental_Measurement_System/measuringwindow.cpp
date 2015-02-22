@@ -20,7 +20,6 @@ MeasuringWindow::MeasuringWindow(QWidget *parent) :
     signalWindow->setAccessibleDescription("signals");
     signalWindow->show();
     signalWindowButtonSwitch(true);
-    connect(ui->pushButton_2, SIGNAL(clicked(bool)), this, SLOT(signalWindowButtonPressed(bool)));
 
     graphicWidget = new WidgetB();
     graphicWindow = ui->mdiArea->addSubWindow(graphicWidget, Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint);
@@ -29,7 +28,6 @@ MeasuringWindow::MeasuringWindow(QWidget *parent) :
     graphicWindow->setAccessibleDescription("charts");
     graphicWindow->show();
     graphicWindowButtonSwitch(true);
-    connect(ui->pushButton_3, SIGNAL(clicked(bool)), this, SLOT(graphicWindowButtonPressed(bool)));
 
     connect(graphicWidget, SIGNAL(changedLoopSignal(int,int)), signalWidget, SLOT(changedLoopSlot(int,int)));
 }
@@ -141,12 +139,12 @@ void MeasuringWindow::signalWindowButtonSwitch(bool checkOn)
     if(checkOn)
     {
         ui->actionSignal_window->setChecked(true);
-        ui->pushButton_2->setChecked(true);
+        //ui->pushButton_2->setChecked(true);
     }
     else
     {
         ui->actionSignal_window->setChecked(false);
-        ui->pushButton_2->setChecked(false);
+        //ui->pushButton_2->setChecked(false);
     }
 }
 
@@ -155,12 +153,12 @@ void MeasuringWindow::graphicWindowButtonSwitch(bool checkOn)
     if(checkOn)
     {
         ui->actionGraphic_Window->setChecked(true);
-        ui->pushButton_3->setChecked(true);
+        //ui->pushButton_3->setChecked(true);
     }
     else
     {
         ui->actionGraphic_Window->setChecked(false);
-        ui->pushButton_3->setChecked(false);
+        //ui->pushButton_3->setChecked(false);
     }
 }
 

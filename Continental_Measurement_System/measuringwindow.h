@@ -5,11 +5,11 @@
 #include <QMainWindow>
 #include <QMdiSubWindow>
 #include <QKeyEvent>
-#include <widgeta.h>
-#include <widgetb.h>
+#include <Continental_Measurement_System/widgeta.h>
+#include <Continental_Measurement_System/widgetb.h>
 
 #include "signalselect.h"
-#include "MDFLib.h"
+#include "Continental_Measurement_System/MDF/MDFLib.h"
 #include "mysignal.h"
 #include "mdffileinfodialog.h"
 #include "opensavedialog.h"

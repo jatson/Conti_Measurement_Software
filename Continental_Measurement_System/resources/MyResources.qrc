@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/Images">
+        <file>icons/Line Chart.png</file>
+        <file>icons/Window Left Panel.png</file>
+        <file>icons/Window Performance.png</file>
+    </qresource>
+</RCC>
