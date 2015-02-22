@@ -19,7 +19,7 @@ MeasuringWindow::MeasuringWindow(QWidget *parent) :
     signalWindow->setWindowTitle("Signals");
     signalWindow->setAccessibleDescription("signals");
     signalWindow->show();
-    signalWindowButtonSwitch(true);
+    ui->actionSignal_window->setChecked(true);
 
     graphicWidget = new WidgetB();
     graphicWindow = ui->mdiArea->addSubWindow(graphicWidget, Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint);
@@ -27,7 +27,7 @@ MeasuringWindow::MeasuringWindow(QWidget *parent) :
     graphicWindow->setWindowTitle("Charts");
     graphicWindow->setAccessibleDescription("charts");
     graphicWindow->show();
-    graphicWindowButtonSwitch(true);
+    ui->actionGraphic_Window->setChecked(true);
 
     connect(graphicWidget, SIGNAL(changedLoopSignal(int,int)), signalWidget, SLOT(changedLoopSlot(int,int)));
 }
@@ -96,70 +96,14 @@ void MeasuringWindow::on_actionSelect_Signals_triggered()
 
 void MeasuringWindow::on_actionSignal_window_triggered()
 {
-    if(ui->actionSignal_window->isChecked())
-    {
-        signalWindow->show();
-        signalWindowButtonSwitch(true);
-    }
-    else
-    {
-        signalWindow->hide();
-        signalWindowButtonSwitch(false);
-    }
+    if(ui->actionSignal_window->isChecked()) signalWindow->show();
+    else signalWindow->hide();
 }
 
 void MeasuringWindow::on_actionGraphic_Window_triggered()
 {
-    if(ui->actionGraphic_Window->isChecked())
-    {
-        graphicWindow->show();
-        graphicWindowButtonSwitch(true);
-    }
-    else
-    {
-        graphicWindow->hide();
-        graphicWindowButtonSwitch(false);
-    }
-}
-
-void MeasuringWindow::signalWindowButtonPressed(bool checked)
-{
-    signalWindowButtonSwitch(checked);
-    emit on_actionSignal_window_triggered();
-}
-
-void MeasuringWindow::graphicWindowButtonPressed(bool checked)
-{
-    graphicWindowButtonSwitch(checked);
-    emit on_actionGraphic_Window_triggered();
-}
-
-void MeasuringWindow::signalWindowButtonSwitch(bool checkOn)
-{
-    if(checkOn)
-    {
-        ui->actionSignal_window->setChecked(true);
-        //ui->pushButton_2->setChecked(true);
-    }
-    else
-    {
-        ui->actionSignal_window->setChecked(false);
-        //ui->pushButton_2->setChecked(false);
-    }
-}
-
-void MeasuringWindow::graphicWindowButtonSwitch(bool checkOn)
-{
-    if(checkOn)
-    {
-        ui->actionGraphic_Window->setChecked(true);
-        //ui->pushButton_3->setChecked(true);
-    }
-    else
-    {
-        ui->actionGraphic_Window->setChecked(false);
-        //ui->pushButton_3->setChecked(false);
-    }
+    if(ui->actionGraphic_Window->isChecked()) graphicWindow->show();
+    else graphicWindow->hide();
 }
 
 void MeasuringWindow::openMDFSlot(QString path, QString name)

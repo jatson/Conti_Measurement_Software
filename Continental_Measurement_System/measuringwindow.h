@@ -51,10 +51,6 @@ private slots:
     void on_actionSelect_Signals_triggered();
     void on_actionSignal_window_triggered();
     void on_actionGraphic_Window_triggered();
-    void signalWindowButtonPressed(bool checked);
-    void graphicWindowButtonPressed(bool checked);
-    void signalWindowButtonSwitch(bool checkOn);
-    void graphicWindowButtonSwitch(bool checkOn);
     void openMDFSlot(QString path, QString name);
     void openProfileSlot(QString path, QString name);
     void saveProfileSlot(QString path, QString name);
