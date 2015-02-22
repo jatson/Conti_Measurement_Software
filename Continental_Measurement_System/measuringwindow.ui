@@ -67,6 +67,7 @@
     </property>
     <addaction name="actionSignal_window"/>
     <addaction name="actionGraphic_Window"/>
+    <addaction name="actionAlign_windows"/>
     <addaction name="separator"/>
     <addaction name="actionSelect_Signals"/>
     <addaction name="actionMDF_file_info"/>
@@ -96,6 +97,7 @@
    </attribute>
    <addaction name="actionSignal_window"/>
    <addaction name="actionGraphic_Window"/>
+   <addaction name="actionAlign_windows"/>
   </widget>
   <action name="actionSaveProfil">
    <property name="text">
@@ -163,6 +165,15 @@
   <action name="actionMDF_file_info">
    <property name="text">
     <string>MDF file info</string>
+   </property>
+  </action>
+  <action name="actionAlign_windows">
+   <property name="icon">
+    <iconset resource="resources/MyResources.qrc">
+     <normaloff>:/Images/icons/Cascade-512.png</normaloff>:/Images/icons/Cascade-512.png</iconset>
+   </property>
+   <property name="text">
+    <string>Align windows</string>
    </property>
   </action>
  </widget>

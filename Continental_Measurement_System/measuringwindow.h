@@ -59,6 +59,8 @@ private slots:
 
     void on_actionClose_triggered();
 
+    void on_actionAlign_windows_triggered();
+
 public slots:
     void addSignal();
 

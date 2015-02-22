@@ -261,3 +261,11 @@ void MeasuringWindow::on_actionClose_triggered()
 {
     this->close();
 }
+
+void MeasuringWindow::on_actionAlign_windows_triggered()
+{
+    QSize size = ui->mdiArea->size();
+    signalWindow->setGeometry(0, 0, size.width() * 0.20, size.height());
+    graphicWindow->setGeometry(size.width() * 0.20, 0, size.width() * 0.80, size.height());
+
+}

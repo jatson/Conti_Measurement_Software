@@ -345,5 +345,22 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MDFFileInfoDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>736</x>
+     <y>304</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>642</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -19,9 +19,6 @@ public:
 
 private:
     Ui::MDFFileInfoDialog *ui;
-
-private slots:
-    void on_pushButton_clicked();
 };
 
 #endif // MDFFILEINFODIALOG_H

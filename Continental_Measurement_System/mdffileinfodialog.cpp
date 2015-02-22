@@ -29,9 +29,4 @@ MDFFileInfoDialog::~MDFFileInfoDialog()
     delete ui;
 }
 
-void MDFFileInfoDialog::on_pushButton_clicked()
-{
-    this->close();
-}
-
 

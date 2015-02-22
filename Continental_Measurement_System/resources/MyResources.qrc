@@ -3,5 +3,6 @@
         <file>icons/Line Chart.png</file>
         <file>icons/Window Left Panel.png</file>
         <file>icons/Window Performance.png</file>
+        <file>icons/Cascade-512.png</file>
     </qresource>
 </RCC>
