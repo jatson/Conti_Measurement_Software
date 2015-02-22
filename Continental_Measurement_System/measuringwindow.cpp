@@ -147,6 +147,8 @@ void MeasuringWindow::openMDFSlot(QString path, QString name)
         notSelectedSignals->append(*signalNameList);
         fileName = new QString(name);
         ui->statusbar->showMessage("Signals loaded!", 5000);
+        ui->actionMDF_file_info->setEnabled(true);
+        ui->actionSelect_Signals->setEnabled(true);
     }
     ui->statusbar->clearMessage();
 }
