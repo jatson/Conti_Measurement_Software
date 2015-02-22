@@ -30,6 +30,8 @@ MeasuringWindow::MeasuringWindow(QWidget *parent) :
     ui->actionGraphic_Window->setChecked(true);
 
     connect(graphicWidget, SIGNAL(changedLoopSignal(int,int)), signalWidget, SLOT(changedLoopSlot(int,int)));
+
+    this->showMaximized();
 }
 
 MeasuringWindow::~MeasuringWindow()

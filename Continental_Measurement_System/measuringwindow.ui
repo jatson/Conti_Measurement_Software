@@ -133,11 +133,14 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="resources/MyResources.qrc">
+    <iconset>
      <normaloff>:/Images/icons/Window Left Panel.png</normaloff>:/Images/icons/Window Left Panel.png</iconset>
    </property>
    <property name="text">
     <string>Signal Window</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
    </property>
   </action>
   <action name="actionGraphic_Window">
@@ -145,21 +148,30 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="resources/MyResources.qrc">
+    <iconset>
      <normaloff>:/Images/icons/Window Performance.png</normaloff>:/Images/icons/Window Performance.png</iconset>
    </property>
    <property name="text">
     <string>Graphic Window</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
    </property>
   </action>
   <action name="actionOpen_MDF_file">
    <property name="text">
     <string>Open MDF file</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="actionClose">
    <property name="text">
     <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Q</string>
    </property>
   </action>
   <action name="actionMDF_file_info">
@@ -169,16 +181,17 @@
   </action>
   <action name="actionAlign_windows">
    <property name="icon">
-    <iconset resource="resources/MyResources.qrc">
+    <iconset>
      <normaloff>:/Images/icons/Cascade-512.png</normaloff>:/Images/icons/Cascade-512.png</iconset>
    </property>
    <property name="text">
     <string>Align windows</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
   </action>
  </widget>
- <resources>
-  <include location="resources/MyResources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
