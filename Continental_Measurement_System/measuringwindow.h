@@ -5,6 +5,9 @@
 #include <QMainWindow>
 #include <QMdiSubWindow>
 #include <QKeyEvent>
+#include <QFileDialog>
+#include <QFileInfo>
+
 #include <Continental_Measurement_System/widgeta.h>
 #include <Continental_Measurement_System/widgetb.h>
 
@@ -35,7 +38,6 @@ private:
     WidgetA *signalWidget;
     QMdiSubWindow *graphicWindow;
     WidgetB *graphicWidget;
-    QString* fileName;
 
     void keyPressEvent(QKeyEvent* event);
     void initSignals();
@@ -43,6 +45,11 @@ private:
     QList<QString>* signalNameList;
     QStringList* selectedSignals;
     QStringList* notSelectedSignals;
+    QString m_fileNameMDF;
+    QString m_fileNameProf;
+
+    void openMDF(QString name);
+    void openProfile(QString name);
     
 private slots:
     void on_actionCloseProfil_triggered();
@@ -51,8 +58,8 @@ private slots:
     void on_actionSelect_Signals_triggered();
     void on_actionSignal_window_triggered();
     void on_actionGraphic_Window_triggered();
-    void openMDFSlot(QString path, QString name);
-    void openProfileSlot(QString path, QString name);
+    //void openMDFSlot(QString path, QString name);
+    //void openProfileSlot(QString path, QString name);
     void saveProfileSlot(QString path, QString name);
     void on_actionMDF_file_info_triggered();
     void on_actionOpen_MDF_file_triggered();

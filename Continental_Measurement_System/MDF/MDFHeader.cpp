@@ -115,6 +115,7 @@ void MDFlib::MDFHeader::setDataGroups(QList< MDFlib::MDFDG* >* value)
 
 QString *MDFlib::MDFHeader::getComment()
 {
+    qDebug() << *(m_comment->getText())->toUtf8();
     return m_comment->getText();
 }
 

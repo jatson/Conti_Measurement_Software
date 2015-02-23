@@ -82,13 +82,6 @@ void MeasuringWindow::on_actionSaveProfil_triggered()
     connect(saveProfileDialog, SIGNAL(fileSelectedSignal(QString,QString)), this, SLOT(saveProfileSlot(QString,QString)));
 }
 
-void MeasuringWindow::on_actionLoadProfil_triggered()
-{
-    OpenSaveDialog *openProfileDialog =new OpenSaveDialog("Open profile file", "Open", 1, this);
-    openProfileDialog->show();
-    connect(openProfileDialog, SIGNAL(fileSelectedSignal(QString,QString)), this, SLOT(openProfileSlot(QString,QString)));
-}
-
 void MeasuringWindow::on_actionSelect_Signals_triggered()
 {
     signalSelectDialog = new SignalSelect(selectedSignals, notSelectedSignals, this);
@@ -108,7 +101,7 @@ void MeasuringWindow::on_actionGraphic_Window_triggered()
     else graphicWindow->hide();
 }
 
-void MeasuringWindow::openMDFSlot(QString path, QString name)
+void MeasuringWindow::openMDF(QString name)
 {
     QList<MDFlib::MDFDG*> *dgList;
     QList<MDFlib::MDFCG*> *cgList;
@@ -118,7 +111,7 @@ void MeasuringWindow::openMDFSlot(QString path, QString name)
 
 
     int numberOfSignals = 0;
-    QDir::setCurrent(path);
+    //QDir::setCurrent(path);
     bool error = mdf->Open(& name);
     if(error)
     {
@@ -145,7 +138,6 @@ void MeasuringWindow::openMDFSlot(QString path, QString name)
             }
         }
         notSelectedSignals->append(*signalNameList);
-        fileName = new QString(name);
         ui->statusbar->showMessage("Signals loaded!", 5000);
         ui->actionMDF_file_info->setEnabled(true);
         ui->actionSelect_Signals->setEnabled(true);
@@ -153,9 +145,9 @@ void MeasuringWindow::openMDFSlot(QString path, QString name)
     ui->statusbar->clearMessage();
 }
 
-void MeasuringWindow::openProfileSlot(QString path, QString name)
+void MeasuringWindow::openProfile(QString name)
 {
-    QDir::setCurrent(path);
+    //QDir::setCurrent(path);
     QFile file(name);
     if( !file.open(QFile::ReadOnly | QFile::Text) )
     {
@@ -245,25 +237,79 @@ void MeasuringWindow::saveProfileSlot(QString path, QString name)
 
 void MeasuringWindow::on_actionMDF_file_info_triggered()
 {
-    MDFFileInfoDialog* dialog = new MDFFileInfoDialog(*fileName, mdf->getFileID()->getFileID(), mdf->getFileID()->getFileVer(),
-                                                      mdf->getFileID()->getProgID(), mdf->getFileID()->getByteOrder(),
-                                                      mdf->getFileID()->getFileVerInt(), mdf->getFileHeader()->getDate(),
-                                                      mdf->getFileHeader()->getTime(), mdf->getFileHeader()->getAuthor(),
-                                                      mdf->getFileHeader()->getOrganization(), mdf->getFileHeader()->getProject(),
-                                                      mdf->getFileHeader()->getVehicleID(), mdf->getFileHeader()->getComment(), this);
+    MDFFileInfoDialog* dialog = new MDFFileInfoDialog(
+                m_fileNameMDF,
+                mdf->getFileID()->getFileID(),
+                mdf->getFileID()->getFileVer(),
+                mdf->getFileID()->getProgID(),
+                mdf->getFileID()->getByteOrder(),
+                mdf->getFileID()->getFileVerInt(),
+                mdf->getFileHeader()->getDate(),
+                mdf->getFileHeader()->getTime(),
+                mdf->getFileHeader()->getAuthor(),
+                mdf->getFileHeader()->getOrganization(),
+                mdf->getFileHeader()->getProject(),
+                mdf->getFileHeader()->getVehicleID(),
+                mdf->getFileHeader()->getComment(),
+                this);
     dialog->show();
 }
 
 void MeasuringWindow::on_actionOpen_MDF_file_triggered()
 {
-    OpenSaveDialog *openMDFDialog = new OpenSaveDialog("Open MDF file", "Open", 1, this);
-    openMDFDialog->show();
-    connect(openMDFDialog, SIGNAL(fileSelectedSignal(QString,QString)), this, SLOT(openMDFSlot(QString,QString)));
+    //OpenSaveDialog *openMDFDialog = new OpenSaveDialog("Open MDF file", "Open", 1, this);
+    //openMDFDialog->show();
+    //connect(openMDFDialog, SIGNAL(fileSelectedSignal(QString,QString)), this, SLOT(openMDFSlot(QString,QString)));
+
+    QString fn;
+
+    if(m_fileNameMDF == "")
+    {
+        QString path = QDir::homePath();
+        QFileInfo info(m_fileNameMDF);
+        path = info.absolutePath();
+
+        fn = QFileDialog::getOpenFileName(
+                    this,
+                    tr("Open File..."),
+                    path,
+                    tr("MDF files (*.mdf);;All files (*.*)"));
+
+    }
+    else fn = m_fileNameMDF;
+
+    openMDF(fn);
+}
+
+void MeasuringWindow::on_actionLoadProfil_triggered()
+{
+    //OpenSaveDialog *openProfileDialog =new OpenSaveDialog("Open profile file", "Open", 1, this);
+    //openProfileDialog->show();
+    //connect(openProfileDialog, SIGNAL(fileSelectedSignal(QString,QString)), this, SLOT(openProfileSlot(QString,QString)));
+
+    QString fn;
+
+    if(m_fileNameProf == "")
+    {
+        QString path = QDir::homePath();
+        QFileInfo info(m_fileNameMDF);
+        path = info.absolutePath();
+
+        fn = QFileDialog::getOpenFileName(
+                    this,
+                    tr("Open File..."),
+                    path,
+                    tr("MDF files (*.prof);;All files (*.*)"));
+
+    }
+    else fn = m_fileNameProf;
+
+    openProfile(fn);
 }
 
 void MeasuringWindow::on_actionClose_triggered()
 {
-    this->close();
+    QApplication::quit();
 }
 
 void MeasuringWindow::on_actionAlign_windows_triggered()
@@ -271,5 +317,4 @@ void MeasuringWindow::on_actionAlign_windows_triggered()
     QSize size = ui->mdiArea->size();
     signalWindow->setGeometry(0, 0, size.width() * 0.20, size.height());
     graphicWindow->setGeometry(size.width() * 0.20, 0, size.width() * 0.80, size.height());
-
 }

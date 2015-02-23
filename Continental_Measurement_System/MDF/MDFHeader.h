@@ -2,6 +2,7 @@
 #define MDFHEADER_H
 
 #include <QtCore>
+#include <QDebug>
 
 #include "MDFDG.h"
 #include "MDFTX.h"

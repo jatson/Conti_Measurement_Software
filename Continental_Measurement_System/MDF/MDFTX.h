@@ -2,6 +2,7 @@
 #define MDFTX_H
 
 #include <QtCore>
+#include <QDebug>
 
 namespace MDFlib {
     class MDFTX

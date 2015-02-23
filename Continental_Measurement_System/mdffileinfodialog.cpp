@@ -18,7 +18,7 @@ MDFFileInfoDialog::MDFFileInfoDialog(QString &fileName, QString *fileID, QString
     ui->label_23->setText(*organization);
     ui->label_24->setText(*projectName);
     ui->label_25->setText(*measurementObjectId);
-    ui->plainTextEdit->appendPlainText(*comment);
+    ui->plainTextEdit->appendPlainText(*comment); //comment
 
     this->setWindowTitle(QString("MDF file info"));
     ui->pushButton->setFocus();
