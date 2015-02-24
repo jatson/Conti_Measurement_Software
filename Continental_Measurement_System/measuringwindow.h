@@ -7,6 +7,9 @@
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QDebug>
+#include <QMessageBox>
+#include <QSettings>
 
 #include <Continental_Measurement_System/widgeta.h>
 #include <Continental_Measurement_System/widgetb.h>
@@ -43,30 +46,36 @@ private:
     void initSignals();
     QMap<QString, mySignal*>* allSignal;
     QList<QString>* signalNameList;
-    QStringList* selectedSignals;
-    QStringList* notSelectedSignals;
+    QStringList selectedSignals;
+    QStringList notSelectedSignals;
     QString m_fileNameMDF;
-    QString m_fileNameProf;
 
     void openMDF(QString name);
-    void openProfile(QString name);
+    void openProfile(QString path);
+    void saveProfile(QString path);
+    void init();
     
 private slots:
-    void on_actionCloseProfil_triggered();
-    void on_actionSaveProfil_triggered();
-    void on_actionLoadProfil_triggered();
+
     void on_actionSelect_Signals_triggered();
     void on_actionSignal_window_triggered();
     void on_actionGraphic_Window_triggered();
-    //void openMDFSlot(QString path, QString name);
-    //void openProfileSlot(QString path, QString name);
-    void saveProfileSlot(QString path, QString name);
     void on_actionMDF_file_info_triggered();
     void on_actionOpen_MDF_file_triggered();
 
     void on_actionClose_triggered();
 
     void on_actionAlign_windows_triggered();
+
+    void on_actionSaveProfile_triggered();
+
+    void on_actionLoadProfile_triggered();
+
+    void on_actionExportProfile_triggered();
+
+    void on_actionImportProfile_triggered();
+
+    void on_actionCloseProfile_triggered();
 
 public slots:
     void addSignal();

@@ -7,11 +7,28 @@ MeasuringWindow::MeasuringWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    init();
+
+    connect(graphicWidget, SIGNAL(changedLoopSignal(int,int)), signalWidget, SLOT(changedLoopSlot(int,int)));
+
+    this->showMaximized();
+}
+
+MeasuringWindow::~MeasuringWindow()
+{
+    emit closeSignal();
+    delete ui;
+}
+
+void MeasuringWindow::init()
+{
     ui->mdiArea->closeAllSubWindows();
     allSignal = new QMap<QString, mySignal*>();
-    selectedSignals = new QStringList();
-    notSelectedSignals = new QStringList();
+    //selectedSignals = new QStringList();
+    //notSelectedSignals = new QStringList();
     this->setWindowTitle("Continental Measurement System");
+
+    m_fileNameMDF = "";
 
     signalWidget = new WidgetA();
     signalWindow = ui->mdiArea->addSubWindow(signalWidget, Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint);
@@ -28,22 +45,12 @@ MeasuringWindow::MeasuringWindow(QWidget *parent) :
     graphicWindow->setAccessibleDescription("charts");
     graphicWindow->show();
     ui->actionGraphic_Window->setChecked(true);
-
-    connect(graphicWidget, SIGNAL(changedLoopSignal(int,int)), signalWidget, SLOT(changedLoopSlot(int,int)));
-
-    this->showMaximized();
-}
-
-MeasuringWindow::~MeasuringWindow()
-{
-    emit closeSignal();
-    delete ui;
 }
 
 void MeasuringWindow::addSignal()
 {
     signalWidget->clear();
-    for(QStringList::iterator it = selectedSignals->begin(); it != selectedSignals->end(); it++)
+    for(QStringList::iterator it = selectedSignals.begin(); it != selectedSignals.end(); it++)
     {
         mySignal* signal = allSignal->value(*it);
         if(!(signal->isLoaded()))
@@ -54,7 +61,7 @@ void MeasuringWindow::addSignal()
         }
         signal->setCheckBox(signalWidget->addItem(*it, *signal->getUnit(), signal->getData(), signal->getChart()), signal->isVisible());
     }
-    QString mainClockName = notSelectedSignals->filter("MAIN_CLOCK", Qt::CaseSensitive).first();
+    QString mainClockName = notSelectedSignals.filter("MAIN_CLOCK", Qt::CaseSensitive).first();
     mySignal* mainClockSignal = allSignal->value(mainClockName);
     if(!(mainClockSignal->isLoaded()))
     {
@@ -69,17 +76,6 @@ void MeasuringWindow::keyPressEvent(QKeyEvent* event)
     if(event->key() == Qt::Key_S) emit on_actionSelect_Signals_triggered();
     if(event->key() == Qt::Key_I) emit on_actionMDF_file_info_triggered();
     if(event->key() == Qt::Key_O) emit on_actionOpen_MDF_file_triggered();
-}
-
-void MeasuringWindow::on_actionCloseProfil_triggered()
-{   
-}
-
-void MeasuringWindow::on_actionSaveProfil_triggered()
-{
-    OpenSaveDialog *saveProfileDialog =new OpenSaveDialog("Save profile file", "Save", 0, this);
-    saveProfileDialog->show();
-    connect(saveProfileDialog, SIGNAL(fileSelectedSignal(QString,QString)), this, SLOT(saveProfileSlot(QString,QString)));
 }
 
 void MeasuringWindow::on_actionSelect_Signals_triggered()
@@ -111,7 +107,6 @@ void MeasuringWindow::openMDF(QString name)
 
 
     int numberOfSignals = 0;
-    //QDir::setCurrent(path);
     bool error = mdf->Open(& name);
     if(error)
     {
@@ -137,102 +132,113 @@ void MeasuringWindow::openMDF(QString name)
                 }
             }
         }
-        notSelectedSignals->append(*signalNameList);
-        ui->statusbar->showMessage("Signals loaded!", 5000);
+        notSelectedSignals.append(*signalNameList);
+        ui->statusbar->showMessage("Signals loaded!", 15000);
         ui->actionMDF_file_info->setEnabled(true);
         ui->actionSelect_Signals->setEnabled(true);
+        m_fileNameMDF = name;
     }
     ui->statusbar->clearMessage();
 }
 
-void MeasuringWindow::openProfile(QString name)
+void MeasuringWindow::openProfile(QString path)
 {
-    //QDir::setCurrent(path);
-    QFile file(name);
-    if( !file.open(QFile::ReadOnly | QFile::Text) )
-    {
-        ui->statusbar->showMessage("ERROR: Profile not opened!", 10000);
-    }
-    else
-    {
-        QTextStream stream(&file);
-        QList<QMdiSubWindow*> winList = ui->mdiArea->subWindowList();
-        QList<QMdiSubWindow*>::iterator winListIt;
-        QString signalName;
-        int isHidden, width, height, xPos, yPos, windowsNumber, signalsNumber, colorIndex, offsetY;
-        double rateY;
+    QFile file(path);
+    if(!file.exists()) { ui->statusbar->showMessage("ERROR: Profile not opened!", 10000);return; }
 
-        stream >> windowsNumber;
-        for(winListIt=winList.begin();winListIt!=winList.end();winListIt++)
-        {
-            stream >> isHidden >> width >> height >> xPos >> yPos;
-            (*winListIt)->setHidden(isHidden);
-            (*winListIt)->size().setWidth(width);
-            (*winListIt)->size().setHeight(height);
-            (*winListIt)->pos().setX(xPos);
-            (*winListIt)->pos().setY(yPos);
-        }
-        stream >> signalsNumber;
-        selectedSignals->clear();
-        notSelectedSignals->clear();
-        notSelectedSignals->append(allSignal->keys());
-        for(int i = 0; i < signalsNumber; i++)
-        {
-            stream >> signalName;
-            selectedSignals->append(signalName);
-            notSelectedSignals->removeOne(signalName);
-        }
-        addSignal();
-        for(QStringList::iterator it = selectedSignals->begin(); it != selectedSignals->end(); it++)
-        {
-            mySignal* signal = allSignal->value(*it);
-            stream >> colorIndex >> offsetY >> rateY ;
-            signal->getChart()->changeColor(colorIndex);
-            signal->getChart()->setOffsetY(offsetY);
-            signal->getChart()->setRateY(rateY);
-        }
+    QSettings settings(path, QSettings::IniFormat, this);
 
-        file.flush();
-        file.close();
-        ui->statusbar->showMessage("Profile opened!", 10000);
+    settings.beginGroup("signalWindow");
+    signalWindow->resize(settings.value("size", QSize(275, 500)).toSize());
+    signalWindow->move(settings.value("position", QPoint(0, 0)).toPoint());
+    bool isHidden = settings.value("isHidden", false).toBool();
+    if(isHidden && !signalWindow->isHidden()) signalWindow->hide();
+    else signalWindow->show();
+    settings.endGroup();
+
+    settings.beginGroup("graphicWindow");
+    graphicWindow->resize(settings.value("size", QSize(800, 500)).toSize());
+    graphicWindow->move(settings.value("position", QPoint(275, 0)).toPoint());
+    isHidden = settings.value("isHidden", false).toBool();
+    if(isHidden && !graphicWindow->isHidden()) graphicWindow->hide();
+    else graphicWindow->show();
+    settings.endGroup();
+
+    settings.beginGroup("signals");
+    int signalsNumber = settings.value("size", 0).toInt();
+    settings.endGroup();
+
+    if(signalsNumber != 0 && ui->actionMDF_file_info->isEnabled())
+    {
+        selectedSignals.clear();
+        notSelectedSignals.clear();
+        notSelectedSignals.append(allSignal->keys());
+        for(int i = 0; i < signalsNumber; ++i)
+        {
+            settings.beginGroup(QString("signal" + QString::number(i)));
+            QString signalName = settings.value("name").toString();
+
+            selectedSignals.append(signalName);
+            notSelectedSignals.removeOne(signalName);
+            addSignal();
+            mySignal *signal = allSignal->value(selectedSignals.last());
+            signal->getChart()->changeColor(settings.value("colorIndex").toInt());
+            signal->getChart()->setOffsetY(settings.value("offsetY").toInt());
+            signal->getChart()->setRateY(settings.value("rateY").toInt());
+
+            settings.endGroup();
+        }
     }
 }
 
-void MeasuringWindow::saveProfileSlot(QString path, QString name)
+void MeasuringWindow::saveProfile(QString path)
 {
-    QDir::setCurrent(path);
-    QFile file(name);
-    if( !file.open(QFile::WriteOnly | QFile::Text) )
+    QFile file(path);
+    if(file.exists())
+        if(!file.remove())    /* This will remove the settings file, if its exist.
+                                 It is not a problem here because the valid settings
+                                 always read from the current program running. */
     {
-        ui->statusbar->showMessage("ERROR: Profile not saved!", 10000);
+        ui->statusbar->showMessage("ERROR: Profile not saved!", 15000);
+        return;
     }
-    else
-    {
-        QTextStream stream(&file);
-        QList<QMdiSubWindow*> winList = ui->mdiArea->subWindowList();
-        QList<QMdiSubWindow*>::iterator winListIt;
 
-        stream << winList.size() << "\n";
-        for(winListIt=winList.begin();winListIt!=winList.end();winListIt++)
+    QSettings settings(path, QSettings::IniFormat, this);
+
+    settings.beginGroup("signalWindow");
+    settings.setValue("size", signalWindow->size());
+    settings.setValue("position", signalWindow->pos());
+    settings.setValue("isHidden", signalWindow->isHidden());
+    settings.endGroup();
+
+    settings.beginGroup("graphicWindow");
+    settings.setValue("size", graphicWindow->size());
+    settings.setValue("position", graphicWindow->pos());
+    settings.setValue("isHidden", graphicWindow->isHidden());
+    settings.endGroup();
+
+    if(ui->actionMDF_file_info->isEnabled())
+    {
+        settings.beginGroup("MDF");
+        settings.setValue("path", m_fileNameMDF);
+        settings.endGroup();
+
+        settings.beginGroup("signals");
+        settings.setValue("size", selectedSignals.size());
+        settings.endGroup();
+
+        for(int i = 0; i < selectedSignals.size(); ++i)
         {
-            stream << (*winListIt)->isHidden() << " " << (*winListIt)->size().width() << " " << (*winListIt)->size().height() << " "
-                   << (*winListIt)->pos().x() << " " << (*winListIt)->pos().y() << "\n";
+            mySignal *signal = allSignal->value(selectedSignals[i]);
+            settings.beginGroup(QString("signal" + QString::number(i)));
+            settings.setValue("name", *signal->getName());
+            settings.setValue("colorIndex", signal->getChart()->getColorIndex());
+            settings.setValue("offsetY", signal->getChart()->getOffsetY());
+            settings.setValue("rateY", signal->getChart()->getRateY());
+            settings.endGroup();
         }
-        stream << selectedSignals->size() << "\n";
-        for(QStringList::iterator it = selectedSignals->begin(); it != selectedSignals->end(); it++)
-        {
-            mySignal* signal = allSignal->value(*it);
-            stream << *signal->getName() << "\n";
-        }
-        for(QStringList::iterator it = selectedSignals->begin(); it != selectedSignals->end(); it++)
-        {
-            mySignal* signal = allSignal->value(*it);
-            stream << signal->getChart()->getColorIndex() << " " << signal->getChart()->getOffsetY() << " " << signal->getChart()->getRateY() << "\n";
-        }
-        file.flush();
-        file.close();
-        ui->statusbar->showMessage("Profile saved!", 10000);
     }
+    ui->statusbar->showMessage("Profile saved!", 15000);
 }
 
 void MeasuringWindow::on_actionMDF_file_info_triggered()
@@ -257,54 +263,83 @@ void MeasuringWindow::on_actionMDF_file_info_triggered()
 
 void MeasuringWindow::on_actionOpen_MDF_file_triggered()
 {
-    //OpenSaveDialog *openMDFDialog = new OpenSaveDialog("Open MDF file", "Open", 1, this);
-    //openMDFDialog->show();
-    //connect(openMDFDialog, SIGNAL(fileSelectedSignal(QString,QString)), this, SLOT(openMDFSlot(QString,QString)));
+    QString path = QDir::homePath();
+    QString fn = QFileDialog::getOpenFileName(
+                this,
+                tr("Open MDF File"),
+                path,
+                tr("MDF files (*.mdf);;All files (*.*)"));
 
-    QString fn;
-
-    if(m_fileNameMDF == "")
+    if(!fn.isEmpty()) openMDF(fn);
+    else
     {
-        QString path = QDir::homePath();
-        QFileInfo info(m_fileNameMDF);
-        path = info.absolutePath();
-
-        fn = QFileDialog::getOpenFileName(
-                    this,
-                    tr("Open File..."),
-                    path,
-                    tr("MDF files (*.mdf);;All files (*.*)"));
-
+        QMessageBox mb(QMessageBox::Critical, tr("Unable to Open"), tr("Unable to open the MDF file!"));
+        mb.exec();
     }
-    else fn = m_fileNameMDF;
-
-    openMDF(fn);
 }
 
-void MeasuringWindow::on_actionLoadProfil_triggered()
+void MeasuringWindow::on_actionSaveProfile_triggered()
 {
-    //OpenSaveDialog *openProfileDialog =new OpenSaveDialog("Open profile file", "Open", 1, this);
-    //openProfileDialog->show();
-    //connect(openProfileDialog, SIGNAL(fileSelectedSignal(QString,QString)), this, SLOT(openProfileSlot(QString,QString)));
+    QString fn = QDir::toNativeSeparators(QString(QCoreApplication::applicationDirPath() + "/config.ini"));
+    QFile file(fn);
 
-    QString fn;
+    if(file.exists()) file.remove();
+    saveProfile(fn);
+}
 
-    if(m_fileNameProf == "")
+void MeasuringWindow::on_actionLoadProfile_triggered()
+{
+    QString fn = QDir::toNativeSeparators(QString(QCoreApplication::applicationDirPath() + "/config.ini"));
+    QFile file(fn);
+
+    if(file.exists()) openProfile(fn);
+    else
     {
-        QString path = QDir::homePath();
-        QFileInfo info(m_fileNameMDF);
-        path = info.absolutePath();
-
-        fn = QFileDialog::getOpenFileName(
-                    this,
-                    tr("Open File..."),
-                    path,
-                    tr("MDF files (*.prof);;All files (*.*)"));
-
+        QMessageBox mb(QMessageBox::Critical, tr("Unable To Load"), tr("Unable to load the profile!"));
+        mb.exec();
     }
-    else fn = m_fileNameProf;
+}
 
-    openProfile(fn);
+void MeasuringWindow::on_actionExportProfile_triggered()
+{
+    QString path = QDir::homePath();
+    QString fn = QFileDialog::getSaveFileName(
+                this,
+                tr("Export Profile"),
+                path,
+                tr("Configuration files (*.ini)"));
+
+    if(!fn.isEmpty())
+    {
+        QFileInfo info(fn);
+        QString ext = info.suffix();
+        if(ext != "ini") fn += ".ini";
+        saveProfile(fn);
+    }
+    else
+    {
+        QMessageBox mb(QMessageBox::Critical, tr("Unable to Export"), tr("Unable to export the profile!"));
+        mb.exec();
+    }
+}
+
+void MeasuringWindow::on_actionImportProfile_triggered()
+{
+    QString path = QDir::homePath();
+    QString fn = QFileDialog::getOpenFileName(
+                this,
+                tr("Import Profile"),
+                path,
+                tr("Configuration files (*.ini)"));
+
+    qDebug() << fn;
+
+    if(!fn.isEmpty()) openProfile(fn);
+    else
+    {
+        QMessageBox mb(QMessageBox::Critical, tr("Unable To Import"), tr("Unable to import the profile!"));
+        mb.exec();
+    }
 }
 
 void MeasuringWindow::on_actionClose_triggered()
@@ -317,4 +352,10 @@ void MeasuringWindow::on_actionAlign_windows_triggered()
     QSize size = ui->mdiArea->size();
     signalWindow->setGeometry(0, 0, size.width() * 0.20, size.height());
     graphicWindow->setGeometry(size.width() * 0.20, 0, size.width() * 0.80, size.height());
+}
+
+void MeasuringWindow::on_actionCloseProfile_triggered()
+{
+    init();
+    on_actionAlign_windows_triggered();
 }
