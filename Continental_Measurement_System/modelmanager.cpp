@@ -23,3 +23,15 @@ void ModelManager::emptyModel()
     item0->setCheckState(Qt::Checked);
     m_signalListModel->setItem(0, 3, item0);
 }
+
+
+/*
+ * ide kell majd átdobálni az adatokat, amire szükség lesz..
+ * és szintén itt kel majd törölni...
+ * a view magától feldolgozza  változást
+ *
+ * itt nem kell foglalkozni a kijelöléssekkel, azt a WidgetA-tól elkérni.
+ * Ő pontosan tudni fogja mi a kijelölt elem idexe, amit aztán oda lehet
+ * adni a chart-nak.
+ *
+ */
