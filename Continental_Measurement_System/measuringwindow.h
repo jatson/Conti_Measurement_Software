@@ -7,7 +7,6 @@
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <QFileInfo>
-#include <QDebug>
 #include <QMessageBox>
 #include <QSettings>
 
@@ -19,6 +18,9 @@
 #include "mysignal.h"
 #include "mdffileinfodialog.h"
 #include "modelmanager.h"
+
+/* for debug */
+#include <QDebug>
 
 namespace Ui {
 class MeasuringWindow;
@@ -44,7 +46,7 @@ private:
 
     void initSignals();
     QMap<QString, mySignal*>* allSignal;
-    QList<QString>* signalNameList;
+    QList<QString> signalNameList;
     QStringList selectedSignals;
     QStringList notSelectedSignals;
     QString m_fileNameMDF;

@@ -45,16 +45,19 @@ void MeasuringWindow::init()
     ui->actionGraphic_Window->setChecked(true);
 }
 
-void MeasuringWindow::addSignal()
+void MeasuringWindow::addSignal() // itt kéne átdobni az adatot a modelmanager-nek
 {
+    qDebug() << "addSignal()";
     //signalWidget->clear();
     for(QStringList::iterator it = selectedSignals.begin(); it != selectedSignals.end(); it++)
     {
         mySignal* signal = allSignal->value(*it);
-        if(!(signal->isLoaded()))
+        if(!(signal->isLoaded())) // egész pontosan itt!!
         {
             signal->loadData();
             graphicWidget->addNewChart(signal->getData(), signal->getTime(), *signal->getName());
+            qDebug() << "trying to add item to the model";
+            signalWidget->m_modelManager->addItem(*signal->getName(), signal->getData(), *signal->getUnit(), signal->isVisible());
             //signal->setChart(chart);
         }
         //signal->setCheckBox(signalWidget->addItem(*it, *signal->getUnit(), signal->getData(), signal->getChart()), signal->isVisible());
@@ -70,6 +73,7 @@ void MeasuringWindow::addSignal()
 
 void MeasuringWindow::on_actionSelect_Signals_triggered()
 {
+    qDebug() << "on_actionSelect_Signals_triggered()";
     signalSelectDialog = new SignalSelect(selectedSignals, notSelectedSignals, this);
     connect(signalSelectDialog, SIGNAL(updateSignalsSignal()), this, SLOT(addSignal()));
     signalSelectDialog->show();
@@ -87,13 +91,18 @@ void MeasuringWindow::on_actionGraphic_Window_triggered()
     else graphicWindow->hide();
 }
 
+///
+/// \brief MeasuringWindow::openMDF
+/// \param name This is the file name
+/// This function will load the MDF file into memory
+///
 void MeasuringWindow::openMDF(QString name)
 {
     QList<MDFlib::MDFDG*> *dgList;
     QList<MDFlib::MDFCG*> *cgList;
     QList<MDFlib::MDFChannel*> *cnList;
     mdf = new MDFlib::MDF();
-    signalNameList = new QList<QString>();
+    //signalNameList = new QList<QString>();
 
 
     int numberOfSignals = 0;
@@ -114,7 +123,7 @@ void MeasuringWindow::openMDF(QString name)
                 cnList = (*cgIt)->getChannels();
                 for(QList<MDFlib::MDFChannel*>::iterator cnIt = cnList->begin(); cnIt != cnList->end(); cnIt++)
                 {
-                    signalNameList->append(*((*cnIt)->getNameOfSignal()));
+                    signalNameList.append(*((*cnIt)->getNameOfSignal()));
                     numberOfSignals++;
 
                     mySignal* signal = new mySignal(*cnIt);
@@ -122,7 +131,7 @@ void MeasuringWindow::openMDF(QString name)
                 }
             }
         }
-        notSelectedSignals.append(*signalNameList);
+        notSelectedSignals.append(signalNameList);
         ui->statusbar->showMessage("Signals loaded!", 15000);
         ui->actionMDF_file_info->setEnabled(true);
         ui->actionSelect_Signals->setEnabled(true);
@@ -251,6 +260,10 @@ void MeasuringWindow::on_actionMDF_file_info_triggered()
     dialog->show();
 }
 
+///
+/// \brief MeasuringWindow::on_actionOpen_MDF_file_triggered
+/// Function for MDF file open
+///
 void MeasuringWindow::on_actionOpen_MDF_file_triggered()
 {
     QString path = QDir::homePath();

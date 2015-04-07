@@ -6,6 +6,8 @@
 #include <QStandardItem>
 #include <QItemSelectionModel>
 
+#include <QDebug>
+
 class ModelManager : public QObject
 {
     Q_OBJECT
@@ -15,6 +17,7 @@ public:
     QItemSelectionModel * m_signalItemSelectionModel;
 
     void emptyModel();
+    void addItem(QString name, QVector<double> data, QString unit, bool enabled);
 
 signals:
 
