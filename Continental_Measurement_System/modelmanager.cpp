@@ -4,7 +4,7 @@ ModelManager::ModelManager(QObject *parent) :
     QObject(parent)
 {
     m_signalListModel = new QStandardItemModel(0, 4, this);     /* will be 0 row, 3 collumns in the list (name, value, unit, is enabled?) */
-    m_signalItemSelectionModel = new QItemSelectionModel(m_signalItemSelectionModel, this);
+    m_signalItemSelectionModel = new QItemSelectionModel(m_signalListModel, this);
     emptyModel();
 }
 
@@ -18,6 +18,7 @@ void ModelManager::emptyModel()
                                                  << tr("Value")
                                                  << tr("Unit")
                                                  << tr("Enabled"));
+    /* Example for checkbox */
     QStandardItem * item0 = new QStandardItem(true);
     item0->setCheckable(true);
     item0->setCheckState(Qt::Checked);
@@ -33,5 +34,4 @@ void ModelManager::emptyModel()
  * itt nem kell foglalkozni a kijelöléssekkel, azt a WidgetA-tól elkérni.
  * Ő pontosan tudni fogja mi a kijelölt elem idexe, amit aztán oda lehet
  * adni a chart-nak.
- *
  */
