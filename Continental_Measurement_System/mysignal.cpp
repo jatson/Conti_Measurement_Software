@@ -5,7 +5,7 @@ mySignal::mySignal()
     visible = false;
     loaded = false;
     checkBox = NULL;
-    chart = NULL;
+    //chart = NULL;
     channel = NULL;
 }
 
@@ -17,7 +17,7 @@ mySignal::mySignal(MDFlib::MDFChannel *ch)
     visible = false;
     loaded = false;
     checkBox = NULL;
-    chart = NULL;
+    //chart = NULL;
 }
 
 void mySignal::loadData()
@@ -30,6 +30,7 @@ void mySignal::loadData()
 
     data = channel->getData()->toVector();
     time = channel->getTimeChannel()->getData()->toVector();
+    for (int i = 0; i < time.size(); ++i) time[i] *= 10000;
 }
 
 MDFlib::MDFChannel *mySignal::getChannel() const
@@ -59,7 +60,7 @@ QCheckBox *mySignal::getCheckBox() const
     return checkBox;
 }
 
-void mySignal::setCheckBox(QCheckBox *value, bool checked)
+/*void mySignal::setCheckBox(QCheckBox *value, bool checked)
 {
     if(checkBox && chart)
     {
@@ -71,7 +72,7 @@ void mySignal::setCheckBox(QCheckBox *value, bool checked)
     {
         connect(checkBox, SIGNAL(stateChanged(int)), this, SLOT(checkboxChangedSlot(int)));
     }
-}
+}*/
 
 QVector<double> mySignal::getData() const
 {
@@ -83,6 +84,7 @@ QVector<double> mySignal::getTime() const
     return time;
 }
 
+/*
 SignalChart *mySignal::getChart() const
 {
     return chart;
@@ -94,6 +96,7 @@ void mySignal::setChart(SignalChart *value)
     connect(this, SIGNAL(checkBoxCheckedSignal()), chart, SLOT(addToSceneSlot()));
     connect(this, SIGNAL(checkBoxUncheckedSignal()), chart, SLOT(removeFromSceneSlot()));
 }
+*/
 
 void mySignal::checkboxChangedSlot(int state)
 {

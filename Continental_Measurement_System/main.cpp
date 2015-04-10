@@ -1,5 +1,5 @@
 #include <QApplication>
-#include <Continental_Measurement_System/measuringwindow.h>
+#include <measuringwindow.h>
 
 int main(int argc, char *argv[])
 {

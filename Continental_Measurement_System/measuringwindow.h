@@ -10,11 +10,11 @@
 #include <QMessageBox>
 #include <QSettings>
 
-#include <Continental_Measurement_System/widgeta.h>
-#include <Continental_Measurement_System/widgetb.h>
+#include <widgeta.h>
+#include <widgetb.h>
 
 #include "signalselect.h"
-#include "Continental_Measurement_System/MDF/MDFLib.h"
+#include "MDF/MDFLib.h"
 #include "mysignal.h"
 #include "mdffileinfodialog.h"
 #include "modelmanager.h"

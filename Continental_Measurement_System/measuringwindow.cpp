@@ -55,9 +55,9 @@ void MeasuringWindow::addSignal() // itt kéne átdobni az adatot a modelmanager
         if(!(signal->isLoaded())) // egész pontosan itt!!
         {
             signal->loadData();
-            graphicWidget->addNewChart(signal->getData(), signal->getTime(), *signal->getName());
+            graphicWidget->addNewChart(signal->getTime(), signal->getData(), *signal->getName());
             qDebug() << "trying to add item to the model";
-            signalWidget->m_modelManager->addItem(*signal->getName(), signal->getData(), *signal->getUnit(), signal->isVisible());
+            signalWidget->m_modelManager->addItem(*signal->getName(), signal->getData(), *signal->getUnit(), true);
             //signal->setChart(chart);
         }
         //signal->setCheckBox(signalWidget->addItem(*it, *signal->getUnit(), signal->getData(), signal->getChart()), signal->isVisible());
@@ -180,10 +180,10 @@ void MeasuringWindow::openProfile(QString path)
             selectedSignals.append(signalName);
             notSelectedSignals.removeOne(signalName);
             addSignal();
-            mySignal *signal = allSignal->value(selectedSignals.last());
-            signal->getChart()->changeColor(settings.value("colorIndex").toInt());
-            signal->getChart()->setOffsetY(settings.value("offsetY").toInt());
-            signal->getChart()->setRateY(settings.value("rateY").toInt());
+            //mySignal *signal = allSignal->value(selectedSignals.last());
+            //signal->getChart()->changeColor(settings.value("colorIndex").toInt());
+            //signal->getChart()->setOffsetY(settings.value("offsetY").toInt());
+            //signal->getChart()->setRateY(settings.value("rateY").toInt());
 
             settings.endGroup();
         }
@@ -193,10 +193,9 @@ void MeasuringWindow::openProfile(QString path)
 void MeasuringWindow::saveProfile(QString path)
 {
     QFile file(path);
-    if(file.exists())
-        if(!file.remove())    /* This will remove the settings file, if its exist.
-                                 It is not a problem here because the valid settings
-                                 always read from the current program running. */
+    if(file.exists()) if(!file.remove())    /* This will remove the settings file, if its exist.
+                                            It is not a problem here because the valid settings
+                                            always read from the current program running. */
     {
         ui->statusbar->showMessage("ERROR: Profile not saved!", 15000);
         return;
@@ -231,9 +230,9 @@ void MeasuringWindow::saveProfile(QString path)
             mySignal *signal = allSignal->value(selectedSignals[i]);
             settings.beginGroup(QString("signal" + QString::number(i)));
             settings.setValue("name", *signal->getName());
-            settings.setValue("colorIndex", signal->getChart()->getColorIndex());
-            settings.setValue("offsetY", signal->getChart()->getOffsetY());
-            settings.setValue("rateY", signal->getChart()->getRateY());
+            //settings.setValue("colorIndex", signal->getChart()->getColorIndex());
+            //settings.setValue("offsetY", signal->getChart()->getOffsetY());
+            //settings.setValue("rateY", signal->getChart()->getRateY());
             settings.endGroup();
         }
     }

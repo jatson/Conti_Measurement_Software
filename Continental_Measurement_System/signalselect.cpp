@@ -177,5 +177,5 @@ void SignalSelect::on_clearSelectedButton_clicked()
     m_notSelectedSignals = *m_oldNotSelectedSignals;
     m_filteredSignals = *m_oldNotSelectedSignals;
     refreshWidgets(ui->allSignalsWidget->currentIndex());
-    ui->findEdit->clear();
+    ui->selectedSignalsWidget->clear();
 }

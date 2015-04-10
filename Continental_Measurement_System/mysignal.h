@@ -4,8 +4,7 @@
 #include <QObject>
 #include <QCheckBox>
 
-#include "Continental_Measurement_System/MDF/MDFChannel.h"
-#include "signalchart.h"
+#include "MDF/MDFChannel.h"
 
 class mySignal : public QObject
 {
@@ -20,11 +19,11 @@ public:
     QString *getName() const;
     QString *getDescription() const;
     QCheckBox *getCheckBox() const;
-    void setCheckBox(QCheckBox *value, bool checked);
+    //void setCheckBox(QCheckBox *value, bool checked);
     QVector<double> getData() const;
     QVector<double> getTime() const;
-    SignalChart *getChart() const;
-    void setChart(SignalChart *value);
+    //SignalChart *getChart() const;
+    //void setChart(SignalChart *value);
     bool isVisible() const;
     bool isLoaded() const;
     QString *getUnit() const;
@@ -38,7 +37,7 @@ private:
     QString* unit;
     QString* timeUnit;
     QCheckBox* checkBox;
-    SignalChart* chart;
+    //SignalChart* chart;
     MDFlib::MDFChannel* channel;
     QVector<double> data;
     QVector<double> time;

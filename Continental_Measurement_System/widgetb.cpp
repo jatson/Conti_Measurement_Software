@@ -22,7 +22,7 @@ void WidgetB::addNewChart(QVector<double> x, QVector<double> y, QString name)
     ui->customPlot->xAxis->setLabel("Time");
     ui->customPlot->yAxis->setLabel(name);
     // set axes ranges, so we see all data:
-    ui->customPlot->xAxis->setRange(x.at(0), x.at(x.count() - 1));
-    ui->customPlot->yAxis->setRange(y.at(0), y.at(y.count() - 1));
+    ui->customPlot->xAxis->rescale();
+    ui->customPlot->yAxis->rescale();
     ui->customPlot->replot();
 }
