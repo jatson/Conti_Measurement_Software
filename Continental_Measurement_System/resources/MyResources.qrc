@@ -4,5 +4,6 @@
         <file>icons/Window Left Panel.png</file>
         <file>icons/Window Performance.png</file>
         <file>icons/Cascade-512.png</file>
+        <file>icons/logo.jpg</file>
     </qresource>
 </RCC>

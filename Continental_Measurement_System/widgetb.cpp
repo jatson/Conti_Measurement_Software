@@ -21,7 +21,7 @@ void WidgetB::addNewChart(QVector<double> x, QVector<double> y, QString name)
 {
 /* configure axis rect */
     wideAxisRect->setupFullAxesBox(true);
-    wideAxisRect->axis(QCPAxis::atRight, 0)->setTickLabels(true); /* Sets whether tick labels are displayed. Tick labels are the numbers drawn next to tick marks. */
+    wideAxisRect->axis(QCPAxis::atRight, 0)->setTickLabels(true); // Sets whether tick labels are displayed. Tick labels are the numbers drawn next to tick marks.
 
 /* add axis to the rect and configure it */
     QCPAxis *axis = wideAxisRect->addAxis(QCPAxis::atLeft);
