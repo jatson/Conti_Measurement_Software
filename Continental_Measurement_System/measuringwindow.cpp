@@ -43,6 +43,9 @@ void MeasuringWindow::init()
     graphicWindow->setAccessibleDescription("charts");
     graphicWindow->show();
     ui->actionGraphic_Window->setChecked(true);
+
+    //próba
+    //graphicWidget->testMultipleAxis();
 }
 
 void MeasuringWindow::addSignal() // itt kéne átdobni az adatot a modelmanager-nek
