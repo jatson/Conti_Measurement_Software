@@ -55,6 +55,7 @@ WidgetB::~WidgetB()
 
 void WidgetB::addNewChart(QVector<double> x, QVector<double> y, QString name)
 {
+    qDebug() << "data size: " << x.size() << "time size: " << y.size();
 /* configure axis rect */
     wideAxisRect->setupFullAxesBox(true);
     wideAxisRect->axis(QCPAxis::atRight, 0)->setTickLabels(true); // Sets whether tick labels are displayed. Tick labels are the numbers drawn next to tick marks.
@@ -75,10 +76,11 @@ void WidgetB::addNewChart(QVector<double> x, QVector<double> y, QString name)
     QCPGraph *mainGraph = ui->customPlot->addGraph(
                 wideAxisRect->axis(QCPAxis::atBottom, wideAxisRect->axisCount(QCPAxis::atBottom) - 1),
                 wideAxisRect->axis(QCPAxis::atLeft, wideAxisRect->axisCount(QCPAxis::atLeft) - 1));
+    mainGraph->setAdaptiveSampling(true);
     mainGraph->setData(x, y);
     mainGraph->setName(name);
-    mainGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDot, QPen(Qt::red), QBrush(Qt::white), 5));
-    mainGraph->setPen(QPen(QColor( 120,  00,  00), 2));
+    mainGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone, QPen(Qt::red), QBrush(Qt::white), 3));
+    mainGraph->setPen(QPen(QColor( 120,  00,  00), 1)); // Magic only happens, when line width == 1
 
 /* rescale axes according to graph's data */
     mainGraph->rescaleAxes();

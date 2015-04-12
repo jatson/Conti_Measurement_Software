@@ -30,7 +30,6 @@ void mySignal::loadData()
 
     data = channel->getData()->toVector();
     time = channel->getTimeChannel()->getData()->toVector();
-    for (int i = 0; i < time.size(); ++i) time[i] *= 10000;
 }
 
 MDFlib::MDFChannel *mySignal::getChannel() const

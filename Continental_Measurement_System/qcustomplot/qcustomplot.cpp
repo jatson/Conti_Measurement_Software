@@ -15687,7 +15687,8 @@ void QCPGraph::getPreparedData(QVector<QCPData> *lineData, QVector<QCPData> *sca
   }
   int dataCount = countDataInBounds(lower, upper, maxCount);
   
-  if (mAdaptiveSampling && dataCount >= maxCount) // use adaptive sampling only if there are at least two points per pixel on average
+  //if (mAdaptiveSampling && dataCount >= maxCount) // use adaptive sampling only if there are at least two points per pixel on average
+  if (mAdaptiveSampling) // use adaptive sampling only if there are at least two points per pixel on average
   {
     if (lineData)
     {
