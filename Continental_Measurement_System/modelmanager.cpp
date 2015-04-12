@@ -14,8 +14,7 @@ void ModelManager::emptyModel()
     m_signalListModel->setHorizontalHeaderLabels(QStringList()
                                                  << tr("Signal Name")
                                                  << tr("Value")
-                                                 << tr("Unit")
-                                                 << tr("Enabled"));
+                                                 << tr("Unit"));
     /*
     QList<QStandardItem *> newRow;
     m_signalListModel->appendRow(newRow);
@@ -37,15 +36,15 @@ void ModelManager::addItem(QString name, QVector<double> data, QString unit, boo
 
     QStandardItem *item0 = new QStandardItem(name);
     m_signalListModel->setItem(row, 0, item0);
-    QStandardItem *item1 = new QStandardItem(data.at(0));
+    QString dataStr = QString::number(data.at(0));
+    QStandardItem *item1 = new QStandardItem(dataStr);
     m_signalListModel->setItem(row, 1, item1);
+    if(unit.isNull() || unit.isEmpty()) unit = "n/a";
     QStandardItem *item2 = new QStandardItem(unit);
     m_signalListModel->setItem(row, 2, item2);
-    QStandardItem *item3 = new QStandardItem(enabled);
-    item0->setCheckable(true);
+        item0->setCheckable(true);
     if(enabled) item0->setCheckState(Qt::Checked);
     else item0->setCheckState(Qt::Unchecked);
-    m_signalListModel->setItem(row, 3, item3);
 }
 
 

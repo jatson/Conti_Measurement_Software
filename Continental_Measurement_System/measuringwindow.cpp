@@ -43,9 +43,6 @@ void MeasuringWindow::init()
     graphicWindow->setAccessibleDescription("charts");
     graphicWindow->show();
     ui->actionGraphic_Window->setChecked(true);
-
-    //próba
-    //graphicWidget->testMultipleAxis();
 }
 
 void MeasuringWindow::addSignal() // itt kéne átdobni az adatot a modelmanager-nek
@@ -105,6 +102,9 @@ void MeasuringWindow::openMDF(QString name)
     QList<MDFlib::MDFCG*> *cgList;
     QList<MDFlib::MDFChannel*> *cnList;
     mdf = new MDFlib::MDF();
+    signalNameList.clear();
+    allSignal->clear();
+    notSelectedSignals.clear();
     //signalNameList = new QList<QString>();
 
 
@@ -355,8 +355,8 @@ void MeasuringWindow::on_actionClose_triggered()
 void MeasuringWindow::on_actionAlign_windows_triggered()
 {
     QSize size = ui->mdiArea->size();
-    signalWindow->setGeometry(0, 0, size.width() * 0.20, size.height());
-    graphicWindow->setGeometry(size.width() * 0.20, 0, size.width() * 0.80, size.height());
+    signalWindow->setGeometry(0, 0, size.width() * 0.30, size.height());
+    graphicWindow->setGeometry(size.width() * 0.30, 0, size.width() * 0.70, size.height());
 }
 
 void MeasuringWindow::on_actionCloseProfile_triggered()

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "modelmanager.h"
+#include "qcustomplot/qcustomplot.h"
 
 namespace Ui {
 class WidgetA;

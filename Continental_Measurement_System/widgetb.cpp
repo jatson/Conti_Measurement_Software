@@ -10,6 +10,42 @@ WidgetB::WidgetB(QWidget *parent) :
     ui->customPlot->plotLayout()->clear();
 /* Create rect */
     wideAxisRect = new QCPAxisRect(ui->customPlot);
+
+    ui->customPlot->setInteractions(QCP::iRangeDrag |
+                                    QCP::iRangeZoom |
+                                    QCP::iSelectAxes |
+                                    QCP::iSelectLegend |
+                                    QCP::iSelectPlottables);
+
+/* Ez valamiért bugos... Mért?
+    ui->customPlot->legend->setVisible(true);
+    QFont legendFont = font();
+    legendFont.setPointSize(10);
+    ui->customPlot->legend->setFont(legendFont);
+    ui->customPlot->legend->setSelectedFont(legendFont);
+    ui->customPlot->legend->setSelectableParts(QCPLegend::spItems); // legend box shall not be selectable, only legend items
+*/
+
+    // connect slot that ties some axis selections together (especially opposite axes):
+    connect(ui->customPlot, SIGNAL(selectionChangedByUser()), this, SLOT(selectionChanged()));
+    // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
+    connect(ui->customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
+    connect(ui->customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
+
+    // make bottom and left axes transfer their ranges to top and right axes:
+    connect(ui->customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->customPlot->xAxis2, SLOT(setRange(QCPRange)));
+
+    // connect some interaction slots:
+    connect(ui->customPlot, SIGNAL(titleDoubleClick(QMouseEvent*,QCPPlotTitle*)), this, SLOT(titleDoubleClick(QMouseEvent*,QCPPlotTitle*)));
+    connect(ui->customPlot, SIGNAL(axisDoubleClick(QCPAxis*,QCPAxis::SelectablePart,QMouseEvent*)), this, SLOT(axisLabelDoubleClick(QCPAxis*,QCPAxis::SelectablePart)));
+    connect(ui->customPlot, SIGNAL(legendDoubleClick(QCPLegend*,QCPAbstractLegendItem*,QMouseEvent*)), this, SLOT(legendDoubleClick(QCPLegend*,QCPAbstractLegendItem*)));
+
+    // connect slot that shows a message in the status bar when a graph is clicked:
+    connect(ui->customPlot, SIGNAL(plottableClick(QCPAbstractPlottable*,QMouseEvent*)), this, SLOT(graphClicked(QCPAbstractPlottable*)));
+
+    // setup policy and connect slot for context menu popup:
+    ui->customPlot->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->customPlot, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequest(QPoint)));
 }
 
 WidgetB::~WidgetB()
@@ -25,7 +61,7 @@ void WidgetB::addNewChart(QVector<double> x, QVector<double> y, QString name)
 
 /* add axis to the rect and configure it */
     QCPAxis *axis = wideAxisRect->addAxis(QCPAxis::atLeft);
-    axis->setVisible(true);
+    axis->setVisible(false);
     axis->setTickLabelColor(QColor(0, 0, 0));
 
 /* configure axis rect low left */
