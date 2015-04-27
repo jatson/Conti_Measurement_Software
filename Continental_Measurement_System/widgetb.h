@@ -18,6 +18,7 @@ public:
     explicit WidgetB(QWidget *parent = 0);
     ~WidgetB();
     void addNewChart(QVector<double> x, QVector<double> y, QString name);
+    int getRandomNo(int low, int high);
 
 private:
     Ui::WidgetB *ui;

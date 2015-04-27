@@ -11,6 +11,10 @@ WidgetB::WidgetB(QWidget *parent) :
 /* Create rect */
     wideAxisRect = new QCPAxisRect(ui->customPlot);
 
+/* Seed the random generator with current time */
+  QTime time = QTime::currentTime();
+  qsrand((uint)time.msec());
+
     ui->customPlot->setInteractions(QCP::iRangeDrag |
                                     QCP::iRangeZoom |
                                     QCP::iSelectAxes |
@@ -80,9 +84,14 @@ void WidgetB::addNewChart(QVector<double> x, QVector<double> y, QString name)
     mainGraph->setData(x, y);
     mainGraph->setName(name);
     mainGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone, QPen(Qt::red), QBrush(Qt::white), 3));
-    mainGraph->setPen(QPen(QColor( 120,  00,  00), 1)); // Magic only happens, when line width == 1
+    mainGraph->setPen(QPen(QColor( getRandomNo(0, 255),  getRandomNo(0, 255),  getRandomNo(0, 255)), 1)); // Magic only happens, when line width == 1
 
 /* rescale axes according to graph's data */
     mainGraph->rescaleAxes();
     wideAxisRect->axis(QCPAxis::atLeft, 1)->setRangeLower(0);
+}
+
+int WidgetB::getRandomNo(int low, int high)
+{
+    return qrand() % ((high + 1) - low) + low;
 }
