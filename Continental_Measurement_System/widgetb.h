@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QDebug>
 #include "qcustomplot/qcustomplot.h"
-#include "widgeta.h"
+#include "modelmanager.h"
 
 namespace Ui {
 class WidgetB;
@@ -20,9 +20,16 @@ public:
     void addNewChart(QVector<double> x, QVector<double> y, QString name);
     int getRandomNo(int low, int high);
 
+    void setModel(ModelManager * model);
+
 private:
     Ui::WidgetB *ui;
     QCPAxisRect * wideAxisRect;
+
+    ModelManager* m_modelManager;
+
+public slots:
+    void dataChangedOnModel();
 
 };
 

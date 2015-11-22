@@ -130,3 +130,8 @@ void mySignal::setUnit(QString *value)
 {
     unit = value;
 }
+
+bool &mySignal::visibility()
+{
+    return visible;
+}

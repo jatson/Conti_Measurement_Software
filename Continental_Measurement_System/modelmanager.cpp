@@ -1,5 +1,26 @@
 #include "modelmanager.h"
 
+void ModelManager::addToWidgetA(QString name, QVector<double> data, QString unit, bool &enabled)
+{
+
+    QList<QStandardItem *> newRow;
+    m_signalListModel->appendRow(newRow);
+    int row = m_signalListModel->rowCount() - 1;
+    qDebug() << "model add item, row: " << row << " name: " << name << " data[0]: " << data.at(0) << " unit: " << unit << " enabled: " << enabled;
+
+    QStandardItem *item0 = new QStandardItem(name);
+    m_signalListModel->setItem(row, 0, item0);
+    QString dataStr = QString::number(data.at(0));
+    QStandardItem *item1 = new QStandardItem(dataStr);
+    m_signalListModel->setItem(row, 1, item1);
+    if(unit.isNull() || unit.isEmpty()) unit = "n/a";
+    QStandardItem *item2 = new QStandardItem(unit);
+    m_signalListModel->setItem(row, 2, item2);
+        item0->setCheckable(true);
+    if(enabled) item0->setCheckState(Qt::Checked);
+    else item0->setCheckState(Qt::Unchecked);
+}
+
 ModelManager::ModelManager(QObject *parent) :
     QObject(parent)
 {
@@ -26,25 +47,10 @@ void ModelManager::emptyModel()
     m_signalListModel->setItem(0, 3, item0);*/
 }
 
-void ModelManager::addItem(QString name, QVector<double> data, QString unit, bool enabled)
+void ModelManager::addItem(QString name, QVector<double> data, QString unit, bool &enabled)
 {
-
-    QList<QStandardItem *> newRow;
-    m_signalListModel->appendRow(newRow);
-    int row = m_signalListModel->rowCount() - 1;
-    qDebug() << "model add item, row: " << row << " name: " << name << " data[0]: " << data.at(0) << " unit: " << unit << " enabled: " << enabled;
-
-    QStandardItem *item0 = new QStandardItem(name);
-    m_signalListModel->setItem(row, 0, item0);
-    QString dataStr = QString::number(data.at(0));
-    QStandardItem *item1 = new QStandardItem(dataStr);
-    m_signalListModel->setItem(row, 1, item1);
-    if(unit.isNull() || unit.isEmpty()) unit = "n/a";
-    QStandardItem *item2 = new QStandardItem(unit);
-    m_signalListModel->setItem(row, 2, item2);
-        item0->setCheckable(true);
-    if(enabled) item0->setCheckState(Qt::Checked);
-    else item0->setCheckState(Qt::Unchecked);
+    addToWidgetA(name, data, unit, enabled);
+    emit dataChanged(); //nyilvánvalóan NEM ebben a függvényben kell ennek a signálnak ellőnie!!!!
 }
 
 

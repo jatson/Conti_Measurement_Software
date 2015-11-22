@@ -44,6 +44,8 @@ private:
     QMdiSubWindow *graphicWindow;
     WidgetB *graphicWidget;
 
+    ModelManager* m_modelManager;
+
     void initSignals();
     QMap<QString, mySignal*>* allSignal;
     QList<QString> signalNameList;

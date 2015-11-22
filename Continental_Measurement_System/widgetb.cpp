@@ -6,6 +6,7 @@ WidgetB::WidgetB(QWidget *parent) :
     ui(new Ui::WidgetB)
 {
     ui->setupUi(this);
+
 /* Clearing plot layout */
     ui->customPlot->plotLayout()->clear();
 /* Create rect */
@@ -50,6 +51,7 @@ WidgetB::WidgetB(QWidget *parent) :
     // setup policy and connect slot for context menu popup:
     ui->customPlot->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->customPlot, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequest(QPoint)));
+
 }
 
 WidgetB::~WidgetB()
@@ -84,7 +86,10 @@ void WidgetB::addNewChart(QVector<double> x, QVector<double> y, QString name)
     mainGraph->setData(x, y);
     mainGraph->setName(name);
     mainGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone, QPen(Qt::red), QBrush(Qt::white), 3));
-    mainGraph->setPen(QPen(QColor( getRandomNo(0, 255),  getRandomNo(0, 255),  getRandomNo(0, 255)), 1)); // Magic only happens, when line width == 1
+    mainGraph->setPen(QPen(QColor(getRandomNo(0, 255),
+                                  getRandomNo(0, 255),
+                                  getRandomNo(0, 255)),
+                                  1)); // Magic only happens, when line width == 1
 
 /* rescale axes according to graph's data */
     mainGraph->rescaleAxes();
@@ -94,4 +99,15 @@ void WidgetB::addNewChart(QVector<double> x, QVector<double> y, QString name)
 int WidgetB::getRandomNo(int low, int high)
 {
     return qrand() % ((high + 1) - low) + low;
+}
+
+void WidgetB::setModel(ModelManager *model)
+{
+    m_modelManager = model;
+    connect(m_modelManager, SIGNAL(dataChanged()), this, SLOT(dataChangedOnModel()));
+}
+
+void WidgetB::dataChangedOnModel()
+{
+    qDebug() << "widgetB: data chaged on model";
 }

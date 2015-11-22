@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include "modelmanager.h"
-#include "qcustomplot/qcustomplot.h"
 
 namespace Ui {
 class WidgetA;
@@ -19,8 +18,13 @@ public:
 
     ModelManager* m_modelManager;
 
+    void setModel(ModelManager * model);
+
 private:
     Ui::WidgetA *ui;
+
+public slots:
+    void dataChangedOnModel();
 };
 
 #endif // WIDGETA_H

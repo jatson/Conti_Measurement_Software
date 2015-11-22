@@ -28,6 +28,7 @@ public:
     bool isLoaded() const;
     QString *getUnit() const;
     void setUnit(QString *value);
+    bool & visibility();
 
 private:
     bool visible;

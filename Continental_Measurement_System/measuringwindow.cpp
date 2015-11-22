@@ -28,7 +28,10 @@ void MeasuringWindow::init()
 
     m_fileNameMDF = "";
 
-    signalWidget = new WidgetA();        
+    m_modelManager = new ModelManager(this);
+
+    signalWidget = new WidgetA();
+    signalWidget->setModel(m_modelManager);
     signalWindow = ui->mdiArea->addSubWindow(signalWidget, Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint);
     signalWindow->resize(275, 500);
     signalWindow->setWindowTitle("Signals");
@@ -37,6 +40,7 @@ void MeasuringWindow::init()
     ui->actionSignal_window->setChecked(true);
 
     graphicWidget = new WidgetB();
+    graphicWidget->setModel(m_modelManager);
     graphicWindow = ui->mdiArea->addSubWindow(graphicWidget, Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint);
     graphicWindow->resize(800, 500);
     graphicWindow->setWindowTitle("Charts");
@@ -57,7 +61,7 @@ void MeasuringWindow::addSignal() // itt kéne átdobni az adatot a modelmanager
             signal->loadData();
             graphicWidget->addNewChart(signal->getTime(), signal->getData(), *signal->getName());
             qDebug() << "trying to add item to the model";
-            signalWidget->m_modelManager->addItem(*signal->getName(), signal->getData(), *signal->getUnit(), true);
+            signalWidget->m_modelManager->addItem(*signal->getName(), signal->getData(), *signal->getUnit(), signal->visibility());
             //signal->setChart(chart);
         }
         //signal->setCheckBox(signalWidget->addItem(*it, *signal->getUnit(), signal->getData(), signal->getChart()), signal->isVisible());
